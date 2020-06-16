@@ -1,0 +1,6 @@
+const Config = require( '../../config/serverConfig');
+const Redis = require('ioredis');
+
+module.exports = (cacheHost)=>{
+    return new Redis(6379, cacheHost);
+};
