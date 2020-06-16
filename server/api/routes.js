@@ -24,7 +24,7 @@ const dbAndCacheConnectionChecker = require('../../server/services/connectionChe
 
 router.get('/listTables', dbAndCacheConnectionChecker.listTablesInDatabase);
 router.get('/checkDbConnection', dbAndCacheConnectionChecker.checkDbConnections);
-router.get('/checkCacheConnection', dbAndCacheConnectionChecker.setAndGetFromCache);
+router.get('/setAndGetFromCache', dbAndCacheConnectionChecker.setAndGetFromCache);
 router.get('/checkRedisConnection',dbAndCacheConnectionChecker.checkRedisConnection);
 
 module.exports = router;
