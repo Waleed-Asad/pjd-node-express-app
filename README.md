@@ -1,13 +1,13 @@
 # pjd-node-express-app
-Node JS Express server
+**Node JS Express server**
 
-Command to run server: npm run start-server
+**Command to run server**: npm run start-server
 
-Check db connection through this route: /api/services/checkDbConnection
+**Check db connection through this route**: /api/services/checkDbConnection
 
 
-List tables from Database: /api/services/listTables 
+**List tables from Database**: /api/services/listTables 
 
-Check Redis connection through this route: /api/services/checkRedisConnection
+C**heck Redis connection through this route**: /api/services/checkRedisConnection
 
-SQL sample dump is located in 'sql_dump' folder
+**SQL sample dump** is located in 'sql_dump' folder
