@@ -4,7 +4,7 @@
 --------------------------------------
 **Command to run server**: npm run start-server
 
-**Environment Variables for Elastic Beanstalk:**
+**Environment Variables for Express Server:**
  
  - DB_HOST
  - DB_NAME
