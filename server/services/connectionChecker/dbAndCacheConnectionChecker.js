@@ -40,15 +40,24 @@ db.connect().then(()=>{
 }
 
 module.exports.listTablesInDatabase = function (req,res) {
+    const responseObj = {
+        success: true,
+        message: ''
+    };
+
     const db = DBController.getDb();
     return db.any('SELECT table_name FROM information_schema.tables WHERE table_schema=\'public\' AND table_type=\'BASE TABLE\';')
         .then((result) => {
             if (result) {
-                res.send(result);
+                responseObj.message = 'List of tables in db'
+                responseObj.data = result;
+                res.send(responseObj);
             }
         }).catch(err => {
-            throw err;
-            res.send(err);
+            responseObj.message = 'Database not connected';
+            responseObj.success = false;
+            responseObj.data = err;
+            res.send(responseObj);
         });
 }
 
@@ -77,30 +86,20 @@ module.exports.checkRedisConnection = function(req,res) {
         message: ''
     };
 
-    var ping = function(e) {
-        var result = client.ping()
-            .then(function(e) {
-                responseObj.message = 'Redis Connected!'
-                res.send(responseObj);
-            })
-            .catch(function(e) {
-                res.send(result)
-            })
-            .finally(function() {
-                client.quit();
-            });
-    };
-
-    try {
-        var client = new Redis({
+    var client = new Redis({
             host: Config.rediscachepath,
-            port: 6379
+            port: 6379,
+          lazyConnect: true
         });
 
-        ping();
-    }
-    catch (e) {
-        console.log(e);
-    }
+        client.connect().catch(function (e) {
+            res.send('Redis not connected')
+        });
+
+    var result = client.ping()
+        .then(function(e) {
+            responseObj.message = 'Redis Connected!'
+            res.send(responseObj);
+        })
 
 }
