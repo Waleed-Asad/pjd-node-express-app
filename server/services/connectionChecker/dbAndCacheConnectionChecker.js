@@ -18,14 +18,24 @@ const Config = require('../../config/serverConfig');
 const ChainBreaker = require('../../utils/chainBreaker');
 const { getJSON, setJSON } = require('../../services/db/cacheController');
 const DBController = require('../../services/db/dbController');
+var Redis = require('ioredis');
 
 
-function checkDbConnections (req,res) {
+module.exports.checkDbConnections = function (req,res) {
+
+    const responseObj = {
+        success: true,
+        message: ''
+    };
+
 const db = DBController.getDb();
 db.connect().then(()=>{
-    res.send('Database connected');
+     responseObj.message = 'Database Connected'
+     res.send(responseObj);
 }).catch( error =>{
-    res.send(error)
+    responseObj.message = 'Database not Connected'
+    responseObj.success= false;
+    res.send(responseObj);
 })
 }
 
@@ -42,11 +52,55 @@ module.exports.listTablesInDatabase = function (req,res) {
         });
 }
 
-function setAndGetFromCache() {
+module.exports.setAndGetFromCache = function() {
+    const responseObj = {
+        success: true,
+        message: ''
+    };
+
     return setJSON(`key_test`, 'REDIS CONNECTED',Config.rediscachepath).then((result) => {
         if (result) {
             getJSON(`key_test`, 'CONNECTED', Config.rediscachepath);
-            return ChainBreaker.success(true);
+            responseObj.message('Cache Connected');
+            res.send(responseObj);
         }
+        responseObj.message('Cache not Connected');
+        responseObj.success= false;
+        res.send(responseObj);
     });
+}
+
+module.exports.checkRedisConnection = function(req,res) {
+
+    const responseObj = {
+        success: true,
+        message: ''
+    };
+
+    var ping = function(e) {
+        var result = client.ping()
+            .then(function(e) {
+                responseObj.message = 'Redis Connected!'
+                res.send(responseObj);
+            })
+            .catch(function(e) {
+                res.send(result)
+            })
+            .finally(function() {
+                client.quit();
+            });
+    };
+
+    try {
+        var client = new Redis({
+            host: Config.rediscachepath,
+            port: 6379
+        });
+
+        ping();
+    }
+    catch (e) {
+        console.log(e);
+    }
+
 }
